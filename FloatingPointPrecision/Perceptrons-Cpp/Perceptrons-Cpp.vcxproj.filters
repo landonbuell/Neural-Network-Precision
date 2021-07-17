@@ -19,5 +19,14 @@
     <ClInclude Include="ArrayND.h">
       <Filter>Inc</Filter>
     </ClInclude>
+    <ClInclude Include="SimpleDense.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Array1D.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Array2D.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

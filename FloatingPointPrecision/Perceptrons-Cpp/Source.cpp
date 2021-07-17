@@ -9,6 +9,8 @@ Description:
 	TODO: Write Description of Source.cpp
 */
 
+#include "ArrayND.h"
+
 int main(int argc, char** argv)
 {
 	// Main Executable
