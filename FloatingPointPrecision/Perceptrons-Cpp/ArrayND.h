@@ -1,13 +1,27 @@
+/*
+Author:		Landon Buell
+Date:		July 2021
+Repo:		Nueral-Network-Precision
+Solution:	SingleLayerPerceptrons
+Project:	Perceptron-Cpp
+File:		ArrayND.h
+Description:
+	TODO: Write Description of Source.cpp
+*/
+
 #pragma once
 
 #include <string>
 #include <vector>
 #include <iostream>
 
+#include "Array1D.h"
+#include "Array2D.h"
+
 template<class dType>
 class ArrayND
 {
-private:
+protected:
 
 	std::vector<int> _shape;	
 	int _size;
@@ -15,48 +29,73 @@ private:
 
 public:
 
+#pragma region Constructors and Destructors
+
 	ArrayND(dType* arr, const int size)
 	{
 		// Constructor for ND Array (basic)
+		_shape = std::vector<int>(size);
+		constructCode(arr, size);
 	}
 
 	ArrayND(dType* arr, const int size, std::vector<int> shape)
 	{
 		// Constructor for ND Array (given shape)
+		_shape = shape;
+		constructCode(arr, size);
 	}
 
-	ArrayND(dType* arr, const int size, dType val)
+	ArrayND(dType val, const int size)
 	{
 		// Constructor for ND Array (given value)
+		_shape = std::vector<int>(size);
+		_size = size;
+		_arr = new dType[size];
+		for (int i = 0; i < _size; i++)
+			_arr[i] = val;
 	}
 
-	ArrayND(ArrayND rhs)
+	ArrayND(const ArrayND<dType>& rhs)
 	{
-		// Constructor for ND Array
+		// Constructor for ND Array (Copy)
+		_shape = rhs._shape;
 		constructCode(rhs._arr, rhs._size);
 	}
 
-	int getRank() const
+	~ArrayND()
 	{
-		// Return the Rank of this Array
-		return _shape.size();
+		// Destructor for ND Array Instance
+		destructCode();
 	}
 
-	std:vector<int> getShape() const
+#pragma endregion
+
+#pragma region Getters and Setters
+
+	
+
+	std::vector<int> getShape() const
 	{
 		// Return the Shape of this Array
 		return _shape;
 	}
 
-	bool setShape(std::vector<int> newShape)
+	int getSize() const
 	{
-		// Reshape this Array
+		// Return the Size of this Array
+		return _size;
 	}
 
 	dType* getData() const
 	{
 		// Return Pointer To Data
 		return _arr;
+	}
+
+	int getRank() const
+	{
+		// Return the Rank of this Array
+		return _shape.size();
 	}
 
 	dType& getItem(int i) const
@@ -66,15 +105,11 @@ public:
 		return _arr[i];
 	}
 
-	dType& operator[](std::vector<int> idxVect)
-	{
-		// Index Via Axes
-		validateIndex(idxVect)	
-		int index = fromSlice(idxVect);
-		return _arr[index];
-	}
+#pragma endregion
 
-private:
+protected:
+
+#pragma region  Helper Functions
 
 	void constructCode(dType* arr, const int size)
 	{
@@ -91,7 +126,7 @@ private:
 	void destructCode()
 	{
 		// Common Code of Object Destruction
-		del[] _arr;
+		delete[] _arr;
 	}
 
 	bool validateIndex(int idx)
@@ -100,7 +135,7 @@ private:
 		if (idx >= _size || idx < 0)
 		{
 			// Over index
-			throw "Over/Under Index on Direct Access"
+			throw "Over/Under Index on Direct Access";
 			return false;
 		}
 		else
@@ -110,18 +145,18 @@ private:
 		}
 	}
 
-	bool validateIndex(std::vector<int> idxVect)
+	bool validateIndex(std::vector<int>& idxVec)
 	{
 		// Validate Index of Vector
-		if(idxVect.size() >= getRank())
+		if(idxVec.size() >= getRank())
 		{
 			// Index exceeds Rank
-			throw new "Indexer size Exceeds Rank";
+			throw "Indexer size Exceeds Rank";
 			return false;
 		}
-		for (int i = 0; i < idxVect.size(); i++)
+		for (int i = 0; i < idxVec.size(); i++)
 		{
-			if (idxVect[i] >= _shape[i] || idxVect[i] < 0)
+			if (idxVec[i] >= _shape[i] || idxVec[i] < 0)
 			{
 				// Index too large for shape
 				throw "Over/Under Index for Axis";
@@ -131,15 +166,15 @@ private:
 		return true;
 	}
 
-	int fromSlice(std::vector<int>& idxVect)
+	int fromSlice(std::vector<int>& idxVec)
 	{
 		// Compute Indexer from vector
 		// Handle Special Case - single Index
-		int idxSize = idxVect.size();
+		int idxSize = idxVec.size();
 		if (idxSize == 1)
-			return this[idxVect[0]];
+			return this[idxVec[0]];
 		else if(idxSize == 0)
-			throw new "Indexer Must have more than 0 elementes";
+			throw "Indexer Must have more than 0 elementes";
 		else
 		{
 			// More than One index
@@ -147,12 +182,82 @@ private:
 			for (int i = 0; i < idxSize - 1; i++)
 			{
 				// Increment Index
-				idx *= idxVect[0];;
+				idx *= idxVec[0];;
 			}
 			idx += idxVec[idxSize - 1];
-		}	
-		return idx;
+			return idx;
+		}			
 	}
 
+	int vectorProduct(const std::vector<int>& intVec)
+	{
+		// Return the product of every element in the vector
+		int result = 1;
+		for (int i = 0; i < intVec.size(); i++)
+		{
+			result *= intVec[i];
+		}
+		return result;
+	}
+
+	bool testReshape(const std::vector<int>& newShape)
+	{
+		// Reshape This Array
+		if (vectorProduct(newShape) != _size)
+		{
+			// Cannot Reshape to size
+			return false;
+		}
+		else
+		{
+			// Can Reshape to Size
+			return true;
+		}
+	}
+
+#pragma endregion
+
+public:
+
+#pragma region Utilties
+
+	ArrayND<dType> reshape(const std::vector<int> newShape)
+	{
+		if (testReshape(newShape) == false)
+		{
+			// Cannot Reshape!
+			throw "Cannot Cast Array to newShape";
+		}
+		// Else, we Can Reshape!
+		if (newShape.size() == 1)
+		{
+			// Return new 1D Array
+			return Array1D<dType>(_arr,newShape[0]);
+		}
+		else if (newShape.size() == 2)
+		{
+			// Return new 1D Array
+			return Array2D<dType>(_arr, newShape[0], newShape[1]);
+		}
+		else
+		{
+			_shape = newShape;
+			return *this;
+		}
+	}
+
+#pragma endregion
+
+#pragma region Operator Overloads
+
+	dType& operator[](std::vector<int> idxVect)
+	{
+		// Index Via Axes
+		validateIndex(idxVect);
+		int index = fromSlice(idxVect);
+		return _arr[index];
+	}
+
+#pragma endregion
 
 };
