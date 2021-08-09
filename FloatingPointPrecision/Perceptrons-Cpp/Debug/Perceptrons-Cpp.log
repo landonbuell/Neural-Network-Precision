@@ -1,5 +1,0 @@
-﻿  Source.cpp
-C:\Users\Landon\Documents\GitHub\Neural-Network-Precision\FloatingPointPrecision\Perceptrons-Cpp\ArrayND.h(174,11): error C2065: 'idxVec': undeclared identifier
-C:\Users\Landon\Documents\GitHub\Neural-Network-Precision\FloatingPointPrecision\Perceptrons-Cpp\ArrayND.h(178): message : see reference to class template instantiation 'ArrayND<dType>' being compiled
-C:\Users\Landon\Documents\GitHub\Neural-Network-Precision\FloatingPointPrecision\Perceptrons-Cpp\ArrayND.h(174,11): error C3861: 'idxVec': identifier not found
-C:\Users\Landon\Documents\GitHub\Neural-Network-Precision\FloatingPointPrecision\Perceptrons-Cpp\ArrayND.h(176,10): error C3861: 'idx': identifier not found
